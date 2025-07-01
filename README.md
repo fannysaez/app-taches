@@ -94,13 +94,24 @@ git clone https://github.com/fannysaez/app-tache.git
 cd app-tache
 ```
 
+### 1bis. Créer une nouvelle application Next.js (si besoin)
+```bash
+npx create-next-app@latest mon-app-taches
+cd mon-app-taches
+```
+
+### 1ter. Construire l'application pour la production
+```bash
+npm run build
+```
+
 ### 2. Installer les dépendances
 ```bash
-npm install
-# ou
-yarn install
-# ou
-pnpm install
+# Installer Prisma CLI et Prisma Client
+npm install prisma @prisma/client
+
+# Initialiser Prisma (crée le dossier prisma/ et le fichier schema.prisma)
+npx prisma init
 ```
 
 ### 3. Configurer la base de données
@@ -126,12 +137,6 @@ npm run seed
 ### 5. Lancer l'application
 ```bash
 npm run dev
-# ou
-yarn dev
-# ou
-pnpm dev
-# ou
-bun dev
 ```
 
 Ouvrez [http://localhost:3000](http://localhost:3000) 🎉
@@ -252,20 +257,16 @@ Le projet utilise **CSS Modules** pour une isolation parfaite des styles :
 
 ## 🧰 Scripts disponibles
 
-```bash
-npm run dev          # Démarrer en développement
-npm run build        # Construire pour production
-npm run start        # Démarrer en production
-npm run lint         # Linter le code
-npm run seed         # Ajouter des données de test
-
-# Scripts Prisma
-npx prisma studio    # Interface graphique BDD
-npx prisma generate  # Régénérer client
-npx prisma migrate   # Créer migration
-```
-
-## 🚀 Déploiement
+| Commande                | Description                                 |
+|-------------------------|---------------------------------------------|
+| `npm run dev`           | Démarrer en développement                   |
+| `npm run build`         | Construire pour production                  |
+| `npm run start`         | Démarrer en production                      |
+| `npm run lint`          | Linter le code                              |
+| `npm run seed`          | Ajouter des données de test                 |
+| `npx prisma studio`     | Interface graphique BDD                     |
+| `npx prisma generate`   | Régénérer client Prisma                     |
+| `npx prisma migrate`    | Créer/appliquer une migration Prisma        |
 
 ### Déploiement sur Vercel
 
