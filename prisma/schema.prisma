@@ -1,0 +1,18 @@
+// Ceci est votre fichier de schéma Prisma,
+// en savoir plus dans la documentation : https://pris.ly/d/prisma-schema
+// Vous cherchez des moyens d'accélérer vos requêtes ou de passer à l'échelle facilement avec vos fonctions serverless ou edge ?
+// Essayez Prisma Accelerate : https://pris.ly/cli/accelerate-init
+
+/// Configuration du schéma Prisma :
+/// - Le bloc `generator client` spécifie l’utilisation du générateur Prisma Client JS,
+///   et génère le client dans le répertoire `../src/generated/prisma`.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+/// - Le bloc `datasource db` configure la connexion à une base de données PostgreSQL,
+///   en utilisant la chaîne de connexion fournie dans la variable d’environnement `DATABASE_URL`.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
