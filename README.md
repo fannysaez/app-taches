@@ -18,6 +18,7 @@ Une application web complète de gestion de tâches construite avec les dernièr
 - 🎨 **Interface intuitive** et responsive
 - ⚡ **Mise à jour en temps réel** sans rechargement
 
+---
 ## 🛠️ Technologies utilisées
 
 ### Frontend
@@ -34,27 +35,48 @@ Une application web complète de gestion de tâches construite avec les dernièr
 - **Neon.tech** - Base de données PostgreSQL cloud (gratuite)
 - **Vercel** - Déploiement et hébergement
 
+---
 ## 🏗️ Architecture
 
-```
-├── src/
-│   ├── app/                 # Pages et layouts (App Router)
-│   │   ├── api/tasks/      # API REST pour les tâches
-│   │   ├── layout.js       # Layout principal
-│   │   └── page.js         # Page d'accueil
-│   ├── components/         # Composants React réutilisables
-│   │   ├── AddTaskForm.js  # Formulaire d'ajout
-│   │   ├── EditTaskForm.js # Formulaire de modification
-│   │   └── TaskList.js     # Liste des tâches
-│   └── lib/
-│       └── prisma.js       # Client Prisma configuré
+``` bash
+mon-app-taches/
 ├── prisma/
-│   ├── schema.prisma       # Schéma de base de données
-│   └── migrations/         # Historique des migrations
-└── scripts/
-    └── seed.js             # Données de test
+│   ├── schema.prisma           # Schéma simple mais complet
+│   └── seed.js                 # Données de test
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── tasks/
+│   │   │       ├── [id]/
+│   │   │       │   └── route.js # CRUD tâche spécifique
+│   │   │       └── route.js     # CRUD tâches générales
+│   │   ├── globals.css          # Styles globaux
+│   │   ├── layout.jsx           # Layout principal
+│   │   └── page.jsx             # Page d'accueil avec toutes les fonctionnalités
+│   ├── components/
+│   │   ├── AddTaskForm.jsx      # Formulaire d'ajout
+│   │   ├── EditTaskForm.jsx     # Formulaire de modification
+│   │   ├── TaskCard.jsx         # Carte de tâche stylée
+│   │   ├── TaskList.jsx         # Liste avec filtres
+│   │   └── TaskFilters.jsx      # Filtres par priorité et statut
+│   ├── lib/
+│   │   ├── prisma.js            # Client Prisma
+│   │   └── utils.js             # Fonctions utilitaires
+│   └── styles/
+│       ├── components/
+│       │   ├── TaskCard.module.css
+│       │   ├── TaskForm.module.css
+│       │   ├── TaskList.module.css
+│       │   ├── TaskFilters.module.css
+│       │   └── Layout.module.css
+│       └── globals.css          # Variables CSS et styles globaux
+├── .env.example
+├── .gitignore
+├── next.config.js
+├── package.json
+└── README.md
 ```
-
+---
 ## 🚦 Installation et Démarrage
 
 ### Prérequis
