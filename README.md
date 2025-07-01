@@ -19,6 +19,7 @@ Une application web complète de gestion de tâches construite avec les dernièr
 - ⚡ **Mise à jour en temps réel** sans rechargement
 
 ---
+
 ## 🛠️ Technologies utilisées
 
 ### Frontend
@@ -36,9 +37,10 @@ Une application web complète de gestion de tâches construite avec les dernièr
 - **Vercel** - Déploiement et hébergement
 
 ---
+
 ## 🏗️ Architecture
 
-``` bash
+```bash
 mon-app-taches/
 ├── prisma/
 │   ├── schema.prisma           # Schéma simple mais complet
@@ -76,12 +78,14 @@ mon-app-taches/
 ├── package.json
 └── README.md
 ```
+
 ---
+
 ## 🚦 Installation et Démarrage
 
 ### Prérequis
 - Node.js 18+ 
-- npm ou yarn
+- npm, yarn, pnpm ou bun
 - Compte Neon.tech (gratuit)
 
 ### 1. Cloner le repository
@@ -93,12 +97,16 @@ cd app-tache
 ### 2. Installer les dépendances
 ```bash
 npm install
+# ou
+yarn install
+# ou
+pnpm install
 ```
 
 ### 3. Configurer la base de données
 1. Créez un projet sur [Neon.tech](https://neon.tech)
 2. Copiez l'URL de connexion
-3. Créez un fichier `.env` :
+3. Créez un fichier `.env.local` :
 ```env
 DATABASE_URL="votre_url_neon_ici"
 ```
@@ -118,34 +126,39 @@ npm run seed
 ### 5. Lancer l'application
 ```bash
 npm run dev
+# ou
+yarn dev
+# ou
+pnpm dev
+# ou
+bun dev
 ```
 
 Ouvrez [http://localhost:3000](http://localhost:3000) 🎉
 
-## 📊 Base de données
+## 📱 Utilisation
 
-### Modèle de données (Prisma Schema)
-```prisma
-model Task {
-  id          Int      @id @default(autoincrement())
-  title       String   // Titre de la tâche
-  description String?  // Description optionnelle
-  completed   Boolean  @default(false) // Statut
-  createdAt   DateTime @default(now()) // Date de création
-  updatedAt   DateTime @updatedAt // Date de modification
-  
-  @@map("tasks")
-}
-```
+### Actions principales
+
+| Action                    | Comment faire                                                                 |
+|---------------------------|-------------------------------------------------------------------------------|
+| **Ajouter une tâche**     | Utilisez le formulaire en haut de page                                       |
+| **Modifier une tâche**    | Cliquez sur l'icône d'édition                                                |
+| **Marquer comme terminée**| Cliquez sur la checkbox                                                       |
+| **Supprimer**             | Cliquez sur l'icône de suppression (avec confirmation)                       |
+| **Filtrer**               | Utilisez les boutons de filtre (Toutes / En cours / Terminées)               |
+
+---
 
 ## 🔌 API Endpoints
 
-| Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| `GET` | `/api/tasks` | Récupérer toutes les tâches |
-| `POST` | `/api/tasks` | Créer une nouvelle tâche |
-| `PUT` | `/api/tasks/[id]` | Modifier une tâche |
-| `DELETE` | `/api/tasks/[id]` | Supprimer une tâche |
+| Méthode | Endpoint             | Description                        |
+|---------|----------------------|------------------------------------|
+| GET     | `/api/tasks`         | Récupérer toutes les tâches        |
+| POST    | `/api/tasks`         | Créer une nouvelle tâche           |
+| GET     | `/api/tasks/[id]`    | Récupérer une tâche spécifique     |
+| PUT     | `/api/tasks/[id]`    | Mettre à jour une tâche            |
+| DELETE  | `/api/tasks/[id]`    | Supprimer une tâche                |
 
 ### Exemple d'utilisation de l'API
 ```javascript
@@ -167,18 +180,63 @@ await fetch('/api/tasks/1', {
 });
 ```
 
-## 🧰 Scripts disponibles
+## 📊 Base de données
 
+### Modèle de données (Prisma Schema)
+```prisma
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String   // Titre de la tâche
+  description String?  // Description optionnelle
+  completed   Boolean  @default(false) // Statut
+  createdAt   DateTime @default(now()) // Date de création
+  updatedAt   DateTime @updatedAt // Date de modification
+  
+  @@map("tasks")
+}
+```
+
+### Commandes utiles
 ```bash
-npm run dev          # Démarrer en développement
-npm run build        # Construire pour production
-npm run start        # Démarrer en production
-npm run seed         # Ajouter des données de test
+# Voir la base de données dans le navigateur
+npx prisma studio
 
-# Scripts Prisma
-npx prisma studio    # Interface graphique BDD
-npx prisma generate  # Régénérer client
-npx prisma migrate   # Créer migration
+# Réinitialiser la base de données
+npx prisma migrate reset
+
+# Appliquer les changements de schéma
+npx prisma db push
+```
+
+## 🎨 Personnalisation des styles
+
+Le projet utilise **CSS Modules** pour une isolation parfaite des styles :
+
+```css
+/* styles/components/TaskCard.module.css */
+.taskCard {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+}
+
+.taskCard.completed {
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+```
+
+### Variables CSS globales
+```css
+/* app/globals.css */
+:root {
+  --primary-color: #0070f3;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --border-radius: 8px;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+}
 ```
 
 ## 🎨 Captures d'écran
@@ -192,17 +250,37 @@ npx prisma migrate   # Créer migration
 ### Modification inline
 ![Modification](https://via.placeholder.com/800x400/ffc107/000?text=Modification+inline+des+tâches)
 
+## 🧰 Scripts disponibles
+
+```bash
+npm run dev          # Démarrer en développement
+npm run build        # Construire pour production
+npm run start        # Démarrer en production
+npm run lint         # Linter le code
+npm run seed         # Ajouter des données de test
+
+# Scripts Prisma
+npx prisma studio    # Interface graphique BDD
+npx prisma generate  # Régénérer client
+npx prisma migrate   # Créer migration
+```
+
 ## 🚀 Déploiement
 
 ### Déploiement sur Vercel
-1. Push votre code sur GitHub
-2. Connectez votre repo à [Vercel](https://vercel.com)
-3. Ajoutez la variable d'environnement `DATABASE_URL`
-4. Déployez ! 🎉
 
-### Variables d'environnement requises
+1. **Connecter votre repository GitHub à Vercel**
+2. **Configurer les variables d'environnement** dans Vercel
+3. **Déployer automatiquement** à chaque push
+
+La façon la plus simple de déployer votre application Next.js est d'utiliser la [plateforme Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) des créateurs de Next.js.
+
+Consultez la [documentation de déploiement Next.js](https://nextjs.org/docs/app/building-your-application/deploying) pour plus de détails.
+
+### Variables d'environnement en production
+
 ```env
-DATABASE_URL="postgresql://..."  # URL Neon.tech
+DATABASE_URL=your_production_database_url
 ```
 
 ## 🔧 Développement
@@ -220,6 +298,38 @@ DATABASE_URL="postgresql://..."  # URL Neon.tech
 - ✅ Code propre et commenté
 - ✅ Architecture modulaire
 
+## 🔧 Troubleshooting
+
+### Problèmes courants
+
+**Erreur de connexion à la base de données :**
+```bash
+# Vérifier que DATABASE_URL est correctement configuré
+echo $DATABASE_URL
+
+# Tester la connexion
+npx prisma db pull
+```
+
+**Problèmes de migration :**
+```bash
+# Réinitialiser et recréer la base
+npx prisma migrate reset
+npx prisma migrate dev
+```
+
+**Erreurs de CSS Modules :**
+- Vérifiez que vos fichiers CSS se terminent par `.module.css`
+- Assurez-vous d'importer les styles correctement : `import styles from './Component.module.css'`
+
+## 📚 Ressources Next.js
+
+Pour en apprendre plus sur Next.js, consultez les ressources suivantes :
+
+- [Documentation Next.js](https://nextjs.org/docs) - découvrez les fonctionnalités et l'API Next.js
+- [Tutoriel interactif Next.js](https://nextjs.org/learn) - tutoriel interactif Next.js
+- [Repository GitHub Next.js](https://github.com/vercel/next.js) - vos commentaires et contributions sont les bienvenus !
+
 ## 🤝 Contribution
 
 Les contributions sont les bienvenues ! Pour contribuer :
@@ -236,7 +346,7 @@ Les contributions sont les bienvenues ! Pour contribuer :
 - [ ] 🔐 Authentification utilisateur
 - [ ] 🏷️ Système de tags/catégories
 - [ ] 📅 Dates d'échéance
-- [ ] 🔍 Recherche et filtres
+- [ ] 🔍 Recherche et filtres avancés
 - [ ] 📱 Progressive Web App (PWA)
 - [ ] 🌙 Mode sombre
 - [ ] 📊 Statistiques et rapports
