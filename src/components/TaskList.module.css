@@ -197,6 +197,104 @@
     background: #fecaca;
 }
 
+/* ✨ NOUVEAUX STYLES POUR L'ÉDITION ✨ */
+
+.editButton {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.editButton:hover {
+    background: #bae6fd;
+}
+
+.editForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.editInput {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.editInput:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.editInput:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.editTextarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    height: 60px;
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.editTextarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.editTextarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.editActions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.saveButton {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.saveButton:hover:not(:disabled) {
+    background: #bbf7d0;
+}
+
+.saveButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cancelButton {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.cancelButton:hover:not(:disabled) {
+    background: #e5e7eb;
+}
+
+.cancelButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .stats {
     margin-top: 32px;
     background: #f9fafb;
@@ -262,6 +360,14 @@
     }
 
     .actionButton {
+        flex: 1;
+    }
+
+    .editActions {
+        justify-content: stretch;
+    }
+
+    .editActions .actionButton {
         flex: 1;
     }
 }

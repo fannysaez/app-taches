@@ -42,7 +42,7 @@ Une application web complète de gestion de tâches construite avec les dernièr
 
 ```bash
 
-mon-app-taches/
+app-taches/
 ├── .next/                          # Build Next.js (généré automatiquement)
 ├── node_modules/                   # Dépendances NPM
 ├── prisma/

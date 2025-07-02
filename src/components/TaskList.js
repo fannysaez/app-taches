@@ -8,6 +8,10 @@ export default function TaskList({ initialTasks }) {
     const [newTask, setNewTask] = useState({ title: '', description: '' })
     const [isAdding, setIsAdding] = useState(false)
 
+    const [editingTask, setEditingTask] = useState(null)
+    const [editingData, setEditingData] = useState({ title: '', description: '' })
+    const [isUpdating, setIsUpdating] = useState(false)
+
     // Ajouter une nouvelle tâche
     const addTask = async (e) => {
         e.preventDefault()
@@ -50,6 +54,55 @@ export default function TaskList({ initialTasks }) {
         } catch (error) {
             console.error('Erreur lors de la mise à jour:', error)
         }
+    }
+
+    // modifier une tâche
+    const updateTask = async (id, updatedData) => {
+        try {
+            const response = await fetch(`/api/tasks/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData)
+            })
+
+            if (response.ok) {
+                const updatedTask = await response.json()
+                setTasks(tasks.map(task =>
+                    task.id === id ? updatedTask : task
+                ))
+            }
+        } catch (error) {
+            console.error('Erreur lors de la modification:', error)
+        }
+    }
+
+    // ✨ NOUVELLES FONCTIONS D'ÉDITION ✨
+    
+    // Commencer l'édition d'une tâche
+    const startEditing = (task) => {
+        setEditingTask(task.id)
+        setEditingData({ 
+            title: task.title, 
+            description: task.description || '' 
+        })
+    }
+
+    // Sauvegarder les modifications
+    const saveEdit = async (e) => {
+        e.preventDefault()
+        if (!editingData.title.trim()) return
+        
+        setIsUpdating(true)
+        await updateTask(editingTask, editingData)
+        setEditingTask(null)
+        setEditingData({ title: '', description: '' })
+        setIsUpdating(false)
+    }
+
+    // Annuler l'édition
+    const cancelEdit = () => {
+        setEditingTask(null)
+        setEditingData({ title: '', description: '' })
     }
 
     // Supprimer une tâche
@@ -109,44 +162,100 @@ export default function TaskList({ initialTasks }) {
                     tasks.map((task) => (
                         <div
                             key={task.id}
-                            className={`${styles.taskCard} ${task.completed ? styles.taskCardCompleted : ''
-                                }`}
+                            className={`${styles.taskCard} ${task.completed ? styles.taskCardCompleted : ''}`}
                         >
                             <div className={styles.taskHeader}>
-                                <div className={styles.taskContent}>
-                                    <h3 className={`${styles.taskTitle} ${task.completed ? styles.taskTitleCompleted : ''
-                                        }`}>
-                                        {task.completed ? '✅' : '⏳'} {task.title}
-                                    </h3>
+                                {editingTask === task.id ? (
+                                    // Mode édition
+                                    <form onSubmit={saveEdit} className={styles.editForm}>
+                                        <input
+                                            type="text"
+                                            value={editingData.title}
+                                            onChange={(e) => setEditingData({ 
+                                                ...editingData, 
+                                                title: e.target.value 
+                                            })}
+                                            className={styles.editInput}
+                                            placeholder="Titre de la tâche..."
+                                            disabled={isUpdating}
+                                        />
+                                        
+                                        <textarea
+                                            value={editingData.description}
+                                            onChange={(e) => setEditingData({ 
+                                                ...editingData, 
+                                                description: e.target.value 
+                                            })}
+                                            className={styles.editTextarea}
+                                            placeholder="Description (optionnelle)..."
+                                            disabled={isUpdating}
+                                        />
+                                        
+                                        <div className={styles.editActions}>
+                                            <button
+                                                type="submit"
+                                                disabled={isUpdating || !editingData.title.trim()}
+                                                className={`${styles.actionButton} ${styles.saveButton}`}
+                                            >
+                                                {isUpdating ? 'Sauvegarde...' : '💾 Sauvegarder'}
+                                            </button>
+                                            
+                                            <button
+                                                type="button"
+                                                onClick={cancelEdit}
+                                                disabled={isUpdating}
+                                                className={`${styles.actionButton} ${styles.cancelButton}`}
+                                            >
+                                                ❌ Annuler
+                                            </button>
+                                        </div>
+                                    </form>
+                                ) : (
+                                    // Mode affichage normal
+                                    <>
+                                        <div className={styles.taskContent}>
+                                            <h3 className={`${styles.taskTitle} ${task.completed ? styles.taskTitleCompleted : ''}`}>
+                                                {task.completed ? '✅' : '⏳'} {task.title}
+                                            </h3>
 
-                                    {task.description && (
-                                        <p className={`${styles.taskDescription} ${task.completed ? styles.taskDescriptionCompleted : ''
-                                            }`}>
-                                            {task.description}
-                                        </p>
-                                    )}
+                                            {task.description && (
+                                                <p className={`${styles.taskDescription} ${task.completed ? styles.taskDescriptionCompleted : ''}`}>
+                                                    {task.description}
+                                                </p>
+                                            )}
 
-                                    <p className={styles.taskDate}>
-                                        Créée le {new Date(task.createdAt).toLocaleDateString('fr-FR')}
-                                    </p>
-                                </div>
+                                            <p className={styles.taskDate}>
+                                                Créée le {new Date(task.createdAt).toLocaleDateString('fr-FR')}
+                                                {task.updatedAt !== task.createdAt && (
+                                                    <span> • Modifiée le {new Date(task.updatedAt).toLocaleDateString('fr-FR')}</span>
+                                                )}
+                                            </p>
+                                        </div>
 
-                                <div className={styles.taskActions}>
-                                    <button
-                                        onClick={() => toggleTask(task.id, !task.completed)}
-                                        className={`${styles.actionButton} ${task.completed ? styles.reopenButton : styles.completeButton
-                                            }`}
-                                    >
-                                        {task.completed ? '↩️ Réouvrir' : '✅ Terminer'}
-                                    </button>
+                                        <div className={styles.taskActions}>
+                                            <button
+                                                onClick={() => startEditing(task)}
+                                                className={`${styles.actionButton} ${styles.editButton}`}
+                                            >
+                                                ✏️ Modifier
+                                            </button>
+                                            
+                                            <button
+                                                onClick={() => toggleTask(task.id, !task.completed)}
+                                                className={`${styles.actionButton} ${task.completed ? styles.reopenButton : styles.completeButton}`}
+                                            >
+                                                {task.completed ? '↩️ Réouvrir' : '✅ Terminer'}
+                                            </button>
 
-                                    <button
-                                        onClick={() => deleteTask(task.id)}
-                                        className={`${styles.actionButton} ${styles.deleteButton}`}
-                                    >
-                                        🗑️ Supprimer
-                                    </button>
-                                </div>
+                                            <button
+                                                onClick={() => deleteTask(task.id)}
+                                                className={`${styles.actionButton} ${styles.deleteButton}`}
+                                            >
+                                                🗑️ Supprimer
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ))
