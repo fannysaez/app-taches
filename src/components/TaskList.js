@@ -7,7 +7,7 @@ export default function TaskList({ initialTasks }) {
     const [tasks, setTasks] = useState(initialTasks)
     const [newTask, setNewTask] = useState({ title: '', description: '' })
     const [isAdding, setIsAdding] = useState(false)
-
+    const [filter, setFilter] = useState('all') //système de filtrage
     const [editingTask, setEditingTask] = useState(null)
     const [editingData, setEditingData] = useState({ title: '', description: '' })
     const [isUpdating, setIsUpdating] = useState(false)
@@ -105,8 +105,20 @@ export default function TaskList({ initialTasks }) {
         setEditingData({ title: '', description: '' })
     }
 
+    // Fonction de filtrage
+    const filteredTasks = tasks.filter(task => {
+        if (filter === 'completed') return task.completed
+        if (filter === 'pending') return !task.completed
+        return true // 'all'
+    })
+    
     // Supprimer une tâche
-    const deleteTask = async (id) => {
+    const deleteTask = async (id, taskTitle) => {
+        // Ajouter cette ligne de confirmation
+        if (!window.confirm(`Êtes-vous sûr de vouloir supprimer la tâche "${taskTitle}" ?`)) {
+            return;
+        }
+        
         try {
             const response = await fetch(`/api/tasks/${id}`, {
                 method: 'DELETE'
@@ -119,7 +131,7 @@ export default function TaskList({ initialTasks }) {
             console.error('Erreur lors de la suppression:', error)
         }
     }
-
+    
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>📝 Ma Todo App</h1>
@@ -152,14 +164,43 @@ export default function TaskList({ initialTasks }) {
                 </button>
             </form>
 
+            {/* 🆕 Boutons de filtre */}
+            {tasks.length > 0 && (
+                <div className={styles.filterButtons}>
+                    <button 
+                        onClick={() => setFilter('all')}
+                        className={`${styles.filterButton} ${filter === 'all' ? styles.filterButtonActive : ''}`}
+                    >
+                        📋 Toutes ({tasks.length})
+                    </button>
+                    <button 
+                        onClick={() => setFilter('pending')}
+                        className={`${styles.filterButton} ${filter === 'pending' ? styles.filterButtonActive : ''}`}
+                    >
+                        ⏳ En cours ({tasks.filter(t => !t.completed).length})
+                    </button>
+                    <button 
+                        onClick={() => setFilter('completed')}
+                        className={`${styles.filterButton} ${filter === 'completed' ? styles.filterButtonActive : ''}`}
+                    >
+                        ✅ Terminées ({tasks.filter(t => t.completed).length})
+                    </button>
+                </div>
+            )}
+
             {/* Liste des tâches */}
             <div className={styles.tasksList}>
-                {tasks.length === 0 ? (
+                {filteredTasks.length === 0 ? (
                     <div className={styles.emptyState}>
-                        🎉 Aucune tâche ! Ajoutez-en une ci-dessus.
+                        {filter === 'all' 
+                            ? '🎉 Aucune tâche ! Ajoutez-en une ci-dessus.'
+                            : filter === 'completed' 
+                                ? '🎯 Aucune tâche terminée pour le moment.'
+                                : '✨ Aucune tâche en cours ! Toutes sont terminées !'
+                        }
                     </div>
                 ) : (
-                    tasks.map((task) => (
+                    filteredTasks.map((task) => (
                         <div
                             key={task.id}
                             className={`${styles.taskCard} ${task.completed ? styles.taskCardCompleted : ''}`}
@@ -248,7 +289,7 @@ export default function TaskList({ initialTasks }) {
                                             </button>
 
                                             <button
-                                                onClick={() => deleteTask(task.id)}
+                                                onClick={() => deleteTask(task.id, task.title)}
                                                 className={`${styles.actionButton} ${styles.deleteButton}`}
                                             >
                                                 🗑️ Supprimer
