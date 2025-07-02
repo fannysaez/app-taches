@@ -115,6 +115,8 @@ npm install prisma @prisma/client
 npx prisma init
 ```
 
+---
+
 ### 3. Configurer la base de données
 
 #### 3.1 Créer un compte Neon.tech
