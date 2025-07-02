@@ -8,7 +8,6 @@
 ///   et génère le client dans le répertoire `../src/generated/prisma`.
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 /// - Le bloc `datasource db` configure la connexion à une base de données PostgreSQL,
 ///   en utilisant la chaîne de connexion fournie dans la variable d’environnement `DATABASE_URL`.

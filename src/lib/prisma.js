@@ -1,4 +1,4 @@
-import { PrismaClient } from '../generated/prisma'
+import { PrismaClient } from '@prisma/client'
 
 // Configuration pour éviter de créer trop de connexions en développement
 const globalForPrisma = globalThis

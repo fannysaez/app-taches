@@ -197,6 +197,91 @@
     background: #fecaca;
 }
 
+/* Styles pour le mode édition */
+.editForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.editInput {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #3b82f6;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: border-color 0.2s;
+}
+
+.editInput:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.editTextarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #3b82f6;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    height: 60px;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+.editTextarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.editActions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.editButton {
+    background: #e0f2fe;
+    color: #0c4a6e;
+}
+
+.editButton:hover {
+    background: #bae6fd;
+}
+
+.saveButton {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.saveButton:hover {
+    background: #bbf7d0;
+}
+
+.saveButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cancelButton {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.cancelButton:hover {
+    background: #fecaca;
+}
+
+.cancelButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .stats {
     margin-top: 32px;
     background: #f9fafb;
@@ -263,5 +348,13 @@
 
     .actionButton {
         flex: 1;
+    }
+
+    .editActions {
+        flex-direction: column;
+    }
+
+    .editActions .actionButton {
+        flex: none;
     }
 }

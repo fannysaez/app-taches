@@ -7,6 +7,11 @@ export default function TaskList({ initialTasks }) {
     const [tasks, setTasks] = useState(initialTasks)
     const [newTask, setNewTask] = useState({ title: '', description: '' })
     const [isAdding, setIsAdding] = useState(false)
+    
+    // États pour l'édition
+    const [editingTaskId, setEditingTaskId] = useState(null)
+    const [editingTask, setEditingTask] = useState({ title: '', description: '' })
+    const [isSaving, setIsSaving] = useState(false)
 
     // Ajouter une nouvelle tâche
     const addTask = async (e) => {
@@ -67,6 +72,49 @@ export default function TaskList({ initialTasks }) {
         }
     }
 
+    // Commencer l'édition d'une tâche
+    const startEdit = (task) => {
+        setEditingTaskId(task.id)
+        setEditingTask({
+            title: task.title,
+            description: task.description || ''
+        })
+    }
+
+    // Sauvegarder l'édition
+    const saveEdit = async () => {
+        if (!editingTask.title.trim()) return
+
+        setIsSaving(true)
+        try {
+            const response = await fetch(`/api/tasks/${editingTaskId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: editingTask.title,
+                    description: editingTask.description
+                })
+            })
+
+            if (response.ok) {
+                const updatedTask = await response.json()
+                setTasks(tasks.map(task =>
+                    task.id === editingTaskId ? updatedTask : task
+                ))
+                cancelEdit()
+            }
+        } catch (error) {
+            console.error('Erreur lors de la sauvegarde:', error)
+        }
+        setIsSaving(false)
+    }
+
+    // Annuler l'édition
+    const cancelEdit = () => {
+        setEditingTaskId(null)
+        setEditingTask({ title: '', description: '' })
+    }
+
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>📝 Ma Todo App</h1>
@@ -113,40 +161,88 @@ export default function TaskList({ initialTasks }) {
                                 }`}
                         >
                             <div className={styles.taskHeader}>
-                                <div className={styles.taskContent}>
-                                    <h3 className={`${styles.taskTitle} ${task.completed ? styles.taskTitleCompleted : ''
-                                        }`}>
-                                        {task.completed ? '✅' : '⏳'} {task.title}
-                                    </h3>
+                                {editingTaskId === task.id ? (
+                                    // Mode édition
+                                    <div className={styles.editForm}>
+                                        <input
+                                            type="text"
+                                            placeholder="Titre de la tâche..."
+                                            className={styles.editInput}
+                                            value={editingTask.title}
+                                            onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value })}
+                                        />
+                                        
+                                        <textarea
+                                            placeholder="Description (optionnelle)..."
+                                            className={styles.editTextarea}
+                                            value={editingTask.description}
+                                            onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
+                                        />
+                                        
+                                        <div className={styles.editActions}>
+                                            <button
+                                                onClick={saveEdit}
+                                                disabled={isSaving || !editingTask.title.trim()}
+                                                className={`${styles.actionButton} ${styles.saveButton}`}
+                                            >
+                                                {isSaving ? 'Sauvegarde...' : '💾 Sauvegarder'}
+                                            </button>
+                                            
+                                            <button
+                                                onClick={cancelEdit}
+                                                disabled={isSaving}
+                                                className={`${styles.actionButton} ${styles.cancelButton}`}
+                                            >
+                                                ❌ Annuler
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    // Mode normal
+                                    <>
+                                        <div className={styles.taskContent}>
+                                            <h3 className={`${styles.taskTitle} ${task.completed ? styles.taskTitleCompleted : ''
+                                                }`}>
+                                                {task.completed ? '✅' : '⏳'} {task.title}
+                                            </h3>
 
-                                    {task.description && (
-                                        <p className={`${styles.taskDescription} ${task.completed ? styles.taskDescriptionCompleted : ''
-                                            }`}>
-                                            {task.description}
-                                        </p>
-                                    )}
+                                            {task.description && (
+                                                <p className={`${styles.taskDescription} ${task.completed ? styles.taskDescriptionCompleted : ''
+                                                    }`}>
+                                                    {task.description}
+                                                </p>
+                                            )}
 
-                                    <p className={styles.taskDate}>
-                                        Créée le {new Date(task.createdAt).toLocaleDateString('fr-FR')}
-                                    </p>
-                                </div>
+                                            <p className={styles.taskDate}>
+                                                Créée le {new Date(task.createdAt).toLocaleDateString('fr-FR')}
+                                            </p>
+                                        </div>
 
-                                <div className={styles.taskActions}>
-                                    <button
-                                        onClick={() => toggleTask(task.id, !task.completed)}
-                                        className={`${styles.actionButton} ${task.completed ? styles.reopenButton : styles.completeButton
-                                            }`}
-                                    >
-                                        {task.completed ? '↩️ Réouvrir' : '✅ Terminer'}
-                                    </button>
+                                        <div className={styles.taskActions}>
+                                            <button
+                                                onClick={() => toggleTask(task.id, !task.completed)}
+                                                className={`${styles.actionButton} ${task.completed ? styles.reopenButton : styles.completeButton
+                                                    }`}
+                                            >
+                                                {task.completed ? '↩️ Réouvrir' : '✅ Terminer'}
+                                            </button>
 
-                                    <button
-                                        onClick={() => deleteTask(task.id)}
-                                        className={`${styles.actionButton} ${styles.deleteButton}`}
-                                    >
-                                        🗑️ Supprimer
-                                    </button>
-                                </div>
+                                            <button
+                                                onClick={() => startEdit(task)}
+                                                className={`${styles.actionButton} ${styles.editButton}`}
+                                            >
+                                                ✏️ Modifier
+                                            </button>
+
+                                            <button
+                                                onClick={() => deleteTask(task.id)}
+                                                className={`${styles.actionButton} ${styles.deleteButton}`}
+                                            >
+                                                🗑️ Supprimer
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ))
