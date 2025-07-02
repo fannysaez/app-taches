@@ -16,3 +16,15 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// Modèle de tâche
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String   // Titre de la tâche
+  description String?  // Description optionnelle
+  completed   Boolean  @default(false) // Statut
+  createdAt   DateTime @default(now()) // Date de création
+  updatedAt   DateTime @updatedAt // Date de modification
+  
+  @@map("tasks")
+}
