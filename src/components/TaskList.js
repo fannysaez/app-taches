@@ -1,9 +1,9 @@
 'use client'
-
 import { useState } from 'react'
 import styles from './TaskList.module.css'
+import ConfirmModal from './ConfirmModal'
 
-export default function TaskList({ initialTasks }) {
+export default function TaskList({ initialTasks = [] }) {
     const [tasks, setTasks] = useState(initialTasks)
     const [newTask, setNewTask] = useState({ title: '', description: '' })
     const [isAdding, setIsAdding] = useState(false)
@@ -11,6 +11,13 @@ export default function TaskList({ initialTasks }) {
     const [editingTask, setEditingTask] = useState(null)
     const [editingData, setEditingData] = useState({ title: '', description: '' })
     const [isUpdating, setIsUpdating] = useState(false)
+    
+    // 🆕 États pour le modal de confirmation
+    const [confirmModal, setConfirmModal] = useState({
+        isOpen: false,
+        taskId: null,
+        taskTitle: ''
+    })
 
     // Ajouter une nouvelle tâche
     const addTask = async (e) => {
@@ -112,20 +119,36 @@ export default function TaskList({ initialTasks }) {
         return true // 'all'
     })
     
-    // Supprimer une tâche
-    const deleteTask = async (id, taskTitle) => {
-        // Ajouter cette ligne de confirmation
-        if (!window.confirm(`Êtes-vous sûr de vouloir supprimer la tâche "${taskTitle}" ?`)) {
-            return;
-        }
+    // 🆕 Ouvrir le modal de confirmation
+    const openDeleteConfirm = (id, taskTitle) => {
+        setConfirmModal({
+            isOpen: true,
+            taskId: id,
+            taskTitle: taskTitle
+        })
+    }
+
+    // 🆕 Fermer le modal de confirmation
+    const closeDeleteConfirm = () => {
+        setConfirmModal({
+            isOpen: false,
+            taskId: null,
+            taskTitle: ''
+        })
+    }
+
+    // 🆕 Supprimer une tâche (confirmée)
+    const deleteTask = async () => {
+        const { taskId } = confirmModal
         
         try {
-            const response = await fetch(`/api/tasks/${id}`, {
+            const response = await fetch(`/api/tasks/${taskId}`, {
                 method: 'DELETE'
             })
 
             if (response.ok) {
-                setTasks(tasks.filter(task => task.id !== id))
+                setTasks(tasks.filter(task => task.id !== taskId))
+                closeDeleteConfirm()
             }
         } catch (error) {
             console.error('Erreur lors de la suppression:', error)
@@ -289,7 +312,7 @@ export default function TaskList({ initialTasks }) {
                                             </button>
 
                                             <button
-                                                onClick={() => deleteTask(task.id, task.title)}
+                                                onClick={() => openDeleteConfirm(task.id, task.title)}
                                                 className={`${styles.actionButton} ${styles.deleteButton}`}
                                             >
                                                 🗑️ Supprimer
@@ -329,6 +352,14 @@ export default function TaskList({ initialTasks }) {
                     </div>
                 </div>
             )}
+
+            {/* 🆕 Modal de confirmation */}
+            <ConfirmModal
+                isOpen={confirmModal.isOpen}
+                onClose={closeDeleteConfirm}
+                onConfirm={deleteTask}
+                message={`Êtes-vous sûr de vouloir supprimer la tâche "${confirmModal.taskTitle}" ?`}
+            />
         </div>
     )
 }
