@@ -41,48 +41,47 @@ Une application web complète de gestion de tâches construite avec les dernièr
 ## 🏗️ Architecture
 
 ```bash
+
 mon-app-taches/
+├── .next/                          # Build Next.js (généré automatiquement)
+├── node_modules/                   # Dépendances NPM
 ├── prisma/
-│   ├── schema.prisma           # Schéma simple mais complet
-│   ├── migrations/             # Migrations de la base de données
-│   └── seed.js                 # Données de test
+│   ├── migrations/                 # Migrations de la base de données
+│   │   └── 20250702065308_init/
+│   │       ├── migration.sql       # Script SQL de migration
+│   │       └── migration_lock.toml # Verrou de migration
+│   └── schema.prisma              # Schéma de base de données
+├── public/                        # Fichiers statiques
+│   └── favicon.ico               # Icône du site
 ├── scripts/
-│   └── seed.js                 # Script pour ajouter des données de test
-├── src/
-│   ├── app/
+│   └── seed.js                   # Script de données de test
+├── src/                          # Code source principal
+│   ├── app/                      # App Router Next.js 13+
 │   │   ├── api/
 │   │   │   └── tasks/
 │   │   │       ├── [id]/
-│   │   │       │   └── route.js # CRUD tâche spécifique
-│   │   │       └── route.js     # CRUD tâches générales
-│   │   ├── globals.css          # Styles globaux
-│   │   ├── layout.jsx           # Layout principal
-│   │   └── page.jsx             # Page d'accueil avec toutes les fonctionnalités
-│   ├── components/
-│   │   ├── AddTaskForm.jsx      # Formulaire d'ajout
-│   │   ├── EditTaskForm.jsx     # Formulaire de modification
-│   │   ├── TaskCard.jsx         # Carte de tâche stylée
-│   │   ├── TaskList.jsx         # Liste avec filtres
-│   │   └── TaskFilters.jsx      # Filtres par priorité et statut
-│   ├── lib/
-│   │   ├── prisma.js            # Client Prisma
-│   │   └── utils.js             # Fonctions utilitaires
-│   └── styles/
-│       ├── components/
-│       │   ├── TaskCard.module.css
-│       │   ├── TaskForm.module.css
-│       │   ├── TaskList.module.css
-│       │   ├── TaskFilters.module.css
-│       │   └── Layout.module.css
-│       └── globals.css          # Variables CSS et styles globaux
-├── .env.example
-├── .env.local                   # Variables d'environnement locales
-├── .gitignore
-├── next.config.js
-├── package.json
-└── README.md
+│   │   │       │   └── route.js  # API CRUD pour tâche spécifique
+│   │   │       └── route.js      # API CRUD pour toutes les tâches
+│   │   ├── components/
+│   │   │   ├── TaskList.js       # Liste des tâches
+│   │   │   └── TaskList.module.css # Styles pour TaskList
+│   │   ├── generated/            # Fichiers générés (Prisma)
+│   │   ├── lib/
+│   │   │   └── prisma.js         # Configuration client Prisma
+│   │   ├── favicon.ico           # Icône de l'app
+│   │   ├── globals.css           # Styles globaux
+│   │   ├── layout.js             # Layout principal de l'application
+│   │   ├── page.js               # Page d'accueil
+│   │   └── page.module.css       # Styles pour la page d'accueil
+├── .env                          # Variables d'environnement (exemple)
+├── .gitignore                    # Fichiers ignorés par Git
+├── eslint.config.mjs            # Configuration ESLint
+├── jsconfig.json                # Configuration JavaScript/VS Code
+├── next.config.mjs              # Configuration Next.js
+├── package-lock.json            # Verrouillage des versions NPM
+├── package.json                 # Dépendances et scripts
+└── README.md                    # Documentation du projet
 ```
-
 ---
 
 ## 🚦 Installation et Démarrage

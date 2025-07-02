@@ -19,12 +19,12 @@ datasource db {
 
 // Modèle de tâche
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())  // Identifiant unique de la tâche, généré automatiquement (clé primaire)
   title       String   // Titre de la tâche
   description String?  // Description optionnelle
   completed   Boolean  @default(false) // Statut
-  createdAt   DateTime @default(now()) // Date de création
+  createdAt   DateTime @default(now()) // Date de création : // Date et heure actuelles par défaut
   updatedAt   DateTime @updatedAt // Date de modification
   
-  @@map("tasks")
+  @@map("tasks")   // Indique que ce modèle sera mappé à la table "tasks" dans la base de données
 }
