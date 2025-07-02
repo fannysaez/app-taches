@@ -269,6 +269,7 @@ Ouvrez [http://localhost:3000](http://localhost:3000) 🎉
 |---------|----------------------|------------------------------------|-------------------------------------|
 | GET     | `/api/tasks`         | Récupérer toutes les tâches        | -                                   |
 | POST    | `/api/tasks`         | Créer une nouvelle tâche           | `{ title, description? }`           |
+| GET     | `/api/tasks/[id]`    | Récupérer une tâche spécifique     | -                                   |
 | PUT     | `/api/tasks/[id]`    | Mettre à jour une tâche            | `{ title?, description?, completed? }` |
 | DELETE  | `/api/tasks/[id]`    | Supprimer une tâche                | -                                   |
 
