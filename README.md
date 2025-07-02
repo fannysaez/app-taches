@@ -584,6 +584,9 @@ npx prisma generate
 npm run dev
 ```
 
+---
+
+
 #### Erreurs de CSS Modules
 - Vérifiez que vos fichiers CSS se terminent par `.module.css`
 - Assurez-vous d'importer les styles correctement : 
